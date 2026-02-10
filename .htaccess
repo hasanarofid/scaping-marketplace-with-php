@@ -1,0 +1,21 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # 1. Protect sensitive files
+    RewriteRule ^(composer\.json|composer\.lock|package\.json|package-lock\.json|\.git|\.env)$ - [F]
+    
+    # 2. Prevent directory listing
+    Options -Indexes
+
+    # 3. Force HTTPS (Optional - uncomment if needed)
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Protect lib folder from direct access
+<IfModule mod_authz_core.c>
+    <FilesMatch "^(Scraper|ExcelGenerator)\.php$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
