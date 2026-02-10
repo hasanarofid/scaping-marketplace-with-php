@@ -8,5 +8,10 @@
     "psr-4": {
       "Lib\\": "lib/"
     }
+  },
+  "config": {
+    "platform": {
+      "php": "8.2"
+    }
   }
 }
