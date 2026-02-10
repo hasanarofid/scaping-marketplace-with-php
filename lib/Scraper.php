@@ -109,28 +109,68 @@ class Scraper
             }
         }
 
-        // 2. Fallback or additional details from window.__initialState__ 
-        // This is needed for weight and variant details which JSON-LD often misses
-        if (empty($weight) || empty($images)) {
-            // Regex for specific product info if JSON-LD failed
-            // This is brittle but necessary as backup
+        // 2. Fallback: Open Graph / Meta Tags (High reliability)
+        if (empty($productName)) {
+            // Name
+            if (preg_match('/<meta property="og:title" content="([^"]+)"/', $html, $m)) {
+                $productName = $m[1];
+            } elseif (preg_match('/<title>([^<]+)<\/title>/', $html, $m)) {
+                $productName = str_replace('| Tokopedia', '', $m[1]);
+            }
+
+            // Description
+            if (preg_match('/<meta property="og:description" content="([^"]+)"/', $html, $m)) {
+                $description = $m[1];
+            }
+
+            // Image
+            if (preg_match('/<meta property="og:image" content="([^"]+)"/', $html, $m)) {
+                $images[] = $m[1];
+            }
+
+            // Price (try og:price:amount or product:price:amount)
+            if (preg_match('/<meta property="product:price:amount" content="([^"]+)"/', $html, $m)) {
+                $price = $m[1];
+            } elseif (preg_match('/<meta property="og:price:amount" content="([^"]+)"/', $html, $m)) {
+                $price = $m[1];
+            } elseif (preg_match('/"price":\s*(\d+)/', $html, $m)) {
+                 // Try loose JSON regex
+                 $price = $m[1];
+            }
+        }
+
+        // 3. Fallback: Bruteforce Regex for window.__initialState__ (Common in React apps)
+        if (empty($productName) || empty($images)) {
+             if (preg_match('/"pName":"([^"]+)"/', $html, $m)) {
+                 $productName = $productName ?: $m[1];
+             }
+             if (preg_match('/"pDesc":"([^"]+)"/', $html, $m)) {
+                 $description = $description ?: $m[1];
+             }
+             if (preg_match('/"price":(\d+)/', $html, $m)) {
+                 $price = $price ?: $m[1];
+             }
+        }
+        
+        // 4. Clean up Price (ensure it's int)
+        // Sometimes price comes as "Rp 10.000" or similar in text
+        if (is_string($price)) {
+            $price = preg_replace('/[^0-9]/', '', $price);
         }
 
         // Clean up data
-        $productName = trim($productName);
-        $description = strip_tags($description); // Shopee prefers plain text
-
+        $productName = trim(html_entity_decode($productName));
+        $description = trim(html_entity_decode(strip_tags($description)));
+        
         // Normalize images
         if (is_string($images)) {
             $images = [$images];
         }
 
-        // Shopee max description length Check? (Shopee limit is around 5000 chars, usually fine)
-
         if (empty($productName)) {
             return [
                 'status' => 'error',
-                'message' => 'Could not parse product data. Cloudflare might be blocking.',
+                'message' => 'Gagal memparsing HTML. Pastikan Anda meng-copy FULL source code (Ctrl+U -> Ctrl+A -> Ctrl+C).',
                 'url' => $url
             ];
         }
