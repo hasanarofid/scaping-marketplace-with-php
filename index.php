@@ -41,31 +41,39 @@
             
             <!-- Tabs -->
             <div class="flex border-b border-gray-200">
-                <button id="auto-btn" onclick="switchTab('auto')" class="tab-btn w-1/2 py-4 text-center font-medium text-indigo-600 border-b-2 border-indigo-600 hover:text-indigo-800 transition">
-                    Automatic Scraper
+                <button id="manual-btn" onclick="switchTab('manual')" class="tab-btn w-1/2 py-4 text-center font-medium text-indigo-600 border-b-2 border-indigo-600 hover:text-indigo-800 transition">
+                    Manual HTML (Recommended)
                 </button>
-                <button id="manual-btn" onclick="switchTab('manual')" class="tab-btn w-1/2 py-4 text-center font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition">
-                    Manual HTML (Fallback)
+                <button id="auto-btn" onclick="switchTab('auto')" class="tab-btn w-1/2 py-4 text-center font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition">
+                    Automatic Scraper
                 </button>
             </div>
 
             <form action="process.php" method="POST" class="p-8">
                 
-                <!-- Automatic Tab -->
-                <div id="auto-content" class="tab-content space-y-6">
+                <!-- Manual Tab (Default) -->
+                <div id="manual-content" class="tab-content space-y-6">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Tokopedia Product URLs</label>
-                        <p class="text-xs text-gray-500 mb-2">Enter one URL per line. Shared hosting might be blocked by Cloudflare, use Manual tab if this fails.</p>
-                        <textarea name="urls" rows="10" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm" placeholder="https://www.tokopedia.com/shop/product-1&#10;https://www.tokopedia.com/shop/product-2"></textarea>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Paste HTML Source Code (Anti-Blocked)</label>
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+                            <p class="text-sm text-blue-700">
+                                <strong>Cara Pakai:</strong> Buka Tokopedia -> Tekan <code>Ctrl+U</code> (View Source) -> <code>Ctrl+A</code> (Select All) -> <code>Ctrl+C</code> (Copy) -> Paste di sini.
+                            </p>
+                        </div>
+                        <textarea name="manual_html" rows="10" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm" placeholder="Paste kode HTML panjang di sini..."></textarea>
                     </div>
                 </div>
 
-                <!-- Manual Tab -->
-                <div id="manual-content" class="tab-content hidden space-y-6">
+                <!-- Automatic Tab -->
+                <div id="auto-content" class="tab-content hidden space-y-6">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Paste HTML Source Code</label>
-                        <p class="text-xs text-gray-500 mb-2">Go to product page -> Right Click -> View Page Source (Ctrl+U) -> Copy All (Ctrl+A, Ctrl+C) -> Paste here.</p>
-                        <textarea name="manual_html" rows="10" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm" placeholder="<html>...</html>"></textarea>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tokopedia Product URLs</label>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                            <p class="text-sm text-yellow-700">
+                                <strong>Note:</strong> Fitur ini sering diblokir (Error 410) oleh Tokopedia jika pakai Shared Hosting. Gunakan tab <strong>Manual HTML</strong> jika gagal.
+                            </p>
+                        </div>
+                        <textarea name="urls" rows="10" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm" placeholder="https://www.tokopedia.com/shop/product-1&#10;https://www.tokopedia.com/shop/product-2"></textarea>
                     </div>
                 </div>
 

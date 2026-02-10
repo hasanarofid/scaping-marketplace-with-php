@@ -46,7 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($products)) {
-        die("No products extracted. Please check your URLs or try the Manual method.");
+        echo '<div style="font-family: sans-serif; max-width: 600px; margin: 50px auto; text-align: center; padding: 20px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">';
+        echo '<h2 style="color: #e11d48;">Gagal Mengambil Data</h2>';
+        echo '<p style="color: #4b5563; margin-bottom: 20px;">Tidak ada produk yang berhasil diextract. Kemungkinan semua URL diblokir atau input manual kosong.</p>';
+        echo '<a href="index.php" style="display: inline-block; background-color: #4f46e5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">&larr; Kembali ke Home</a>';
+        echo '</div>';
+        exit;
     }
 
     // 3. Generate Excel
