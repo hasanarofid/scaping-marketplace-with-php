@@ -22,9 +22,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result['status'] === 'success') {
             $products[] = $result;
         } else {
-            // Log error or show message?
-            // For now, simple error output
-            echo "Error scraping $url: " . $result['message'] . "<br>";
+            // Check if it's a blocking issue
+            $isBlocked = strpos($result['message'], 'Status 410') !== false || strpos($result['message'], 'Status 403') !== false;
+            
+            echo "<div style='background-color: #fee2e2; border: 1px solid #ef4444; color: #b91c1c; padding: 10px; margin-bottom: 10px; result-radius: 6px;'>";
+            echo "<strong>Error scraping {$url}:</strong> " . htmlspecialchars($result['message']) . "<br>";
+            if ($isBlocked) {
+                echo "<div style='margin-top: 5px; font-weight: bold;'>⚠️ Hosting IP Blocked by Tokopedia. Please use the <a href='index.php' onclick='alert(\"Switch to the Manual HTML tab in the main page.\")' style='text-decoration: underline;'>Manual HTML</a> method.</div>";
+            }
+            echo "</div>";
         }
     }
 
